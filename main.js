@@ -43,6 +43,65 @@ app.use((err, req, res, next) => {
   });
 });
 
+
+// Practice
+//q1
+const usersRouter = express.Router();
+usersRouter.use((req, res, next) => {
+    res.json(users);
+    console.log(users);
+    next();
+});
+app.use("/users",usersRouter)
+
+//q2
+const logUser = (req,res,next)=>{
+    console.log(req.body);
+}
+app.post("/users/create",(req,res,next)=>{
+    const addUser = req.body.name;
+    users.push(addUser)
+    next()
+},logUser)
+
+//q3
+const productsRouter = express.Router();
+productsRouter.use((req, res, next) => {
+    console.log("hello from products");
+});
+app.use("/products", productsRouter)
+
+//q4 
+const products = [`keyboard`, `mouse`];
+app.put("/products/update", (req,res,next)=>{
+    const replacement = req.body.product;
+    products.splice(1,1,replacement);
+    next();
+})
+
+app.get("/users", (req, res, next) => {
+    res.json(users);
+});
+
+//q5
+const pRouter = (req,res,next)=>{
+    console.log("/products",req.path);
+    next()
+}
+app.use("/products", pRouter);
+
+//q6
+app.use("*",(req,res,next)=>{
+    const err = new Error("page doesn't exist")
+    err.status = 404
+    next(err)
+    
+})
+app.use((err,req,res,next)=>{
+    res.status(err.status);
+    res.json("NOT FOUND");
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
